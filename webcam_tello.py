@@ -54,4 +54,6 @@ try:
 except Exception as ex:
 	print(ex)
 finally:
-	drone.quit()            
+	drone.quit()   
+
+             
