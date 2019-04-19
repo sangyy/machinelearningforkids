@@ -16,7 +16,8 @@ def getWebcamImageData():
         ok, data = cv2.imencode('.jpg', image)
         if ok != True:
             raise ValueError("Problem getting image data")
-        return base64.b64encode(data)
+        return str(base64.b64encode(data), encoding='utf-8')#mac conda
+        #return base64.b64encode(data)#jetson
     finally:
         cam.release()
 
@@ -41,8 +42,8 @@ def classify():
 
 drone = tellopy.Tello()
 try:
-    drone.connect()
-    drone.wait_for_connection(60.0)
+    #drone.connect()
+    #drone.wait_for_connection(60.0)
     while True:
         demo = classify()
 
@@ -52,13 +53,14 @@ try:
 
         # CHANGE THIS to do something different with the result
         print ("result: '%s' with %d%% confidence" % (label, confidence))
-
+        """
         if label == "takeoff":
             drone.takeoff()
             sleep(5)
         elif label == "land":
             drone.land()
             sleep(5)
+        """
 
 except Exception as ex:
     print(ex)
