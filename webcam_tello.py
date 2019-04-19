@@ -5,7 +5,12 @@ import tellopy
 def getWebcamImageData():
     cam = cv2.VideoCapture(0)
     try:
-        ok, image = cam.read()
+        while True:
+            ok, image = cam.read()
+            cv2.imshow("Press the c key to take photos for identification", image)
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord("c"):
+                break
         if ok != True:
             raise ValueError("Problem using the webcam")
         ok, data = cv2.imencode('.jpg', image)
@@ -32,28 +37,33 @@ def classify():
         response.raise_for_status()
 
 
-demo = classify()
 
-label = demo["class_name"]
-confidence = demo["confidence"]
-
-
-# CHANGE THIS to do something different with the result
-print ("result: '%s' with %d%% confidence" % (label, confidence))
 
 drone = tellopy.Tello()
 try:
-	drone.connect()
-	drone.wait_for_connection(60.0)
-	if label == "takeoff":
-		drone.takeoff()
-		sleep(5)
-	elif label == "land":
-		drone.land()
-		sleep(5)
-except Exception as ex:
-	print(ex)
-finally:
-	drone.quit()   
+    drone.connect()
+    drone.wait_for_connection(60.0)
+    while True:
+        demo = classify()
 
-             
+        label = demo["class_name"]
+        confidence = demo["confidence"]
+
+
+        # CHANGE THIS to do something different with the result
+        print ("result: '%s' with %d%% confidence" % (label, confidence))
+
+        if label == "takeoff":
+            drone.takeoff()
+            sleep(5)
+        elif label == "land":
+            drone.land()
+            sleep(5)
+
+except Exception as ex:
+    print(ex)
+finally:
+    print('Shutting down connection to drone...')
+    drone.quit()   
+
+   
