@@ -47,8 +47,8 @@ print ("result: '%s' with %d%% confidence" % (label, confidence))
 
 drone = tellopy.Tello()
 try:
-    #drone.connect()
-    #drone.wait_for_connection(60.0)
+    drone.connect()
+    drone.wait_for_connection(60.0)
     demo = classify("test.jpg")
 
     label = demo["class_name"]
